@@ -18,6 +18,7 @@ import {
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import {ChakraProvider} from "@chakra-ui/react";
+import Layout from "./components/Layout.jsx";
 
 
 
@@ -46,7 +47,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <ChakraProvider>
             <WagmiConfig config={wagmiConfig}>
             <RainbowKitProvider chains={chains}>
+                <Layout>
             <App />
+                    </Layout>
             </RainbowKitProvider>
             </WagmiConfig>
         </ChakraProvider>

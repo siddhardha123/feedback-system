@@ -9,19 +9,11 @@ import {
     Spacer, Link,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import {useNavigate} from "react-router-dom";
 const Home = () => {
+    const navigate = useNavigate();
     return (
         <Flex direction="column" minH="100vh"> {/* Updated to occupy full height */}
-            {/* Navigation */}
-            <Flex as="nav" p={4} bg="blue.400" color="white" align="center">
-                <Box p="2">block feedback</Box>
-                <Spacer />
-                <Link>Analytics</Link>
-                <Spacer />
-                <Box>
-                    <ConnectButton />
-                </Box>
-            </Flex>
 
             {/* Hero Section */}
             <Flex align="center" justify="center" bg="blue.100" flex="1"> {/* Updated for flexible expansion */}
@@ -30,7 +22,7 @@ const Home = () => {
                         Give feedback that <span style={{ color: 'red' }}>matters</span>
                     </Heading>
                     <Text>private secure scalable</Text>
-                    <Button colorScheme="blue" size="md">Get Started</Button>
+                    <Button colorScheme="blue" size="md" onClick={()=>{navigate('/dashboard')}}>Get Started</Button>
                 </VStack>
             </Flex>
 

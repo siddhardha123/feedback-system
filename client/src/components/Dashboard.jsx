@@ -6,20 +6,27 @@ import {
     Heading,
     Text,
     VStack,
-    Spacer, Link,
+    Spacer,
+    Link,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi'
+import { useAccount } from 'wagmi';
+import admin from '../config.js';
+import Admin from "./Admin.jsx";
+import Student from "./Student.jsx";
+
+
+
 
 const Dashboard = () => {
-    const { address, isConnecting, isDisconnected } = useAccount()
+    const { address } = useAccount();
+
+    const isAdmin = address === admin;
+
     return (
-       <Flex>
-              <Box>
-                <Heading>Dashboard</Heading>
-                <Text>Address: {address}</Text>
-              </Box>
-       </Flex>
+        <Flex>
+            {isAdmin ? <Admin /> : <Student />}
+        </Flex>
     );
 };
 
