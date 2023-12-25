@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
-const exampleRouter = require('./routers/example.router')
-
+const studentRouter = require('./routers/student.router')
+const facultyRouter = require('./routers/faculty.router')
 
 const port = 3000;
 
-
-app.use(exampleRouter);
+app.use(studentRouter)
+app.use(facultyRouter)
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
