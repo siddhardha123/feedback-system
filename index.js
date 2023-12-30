@@ -18,7 +18,6 @@ app.use(facultyRouter)
 
 
 
-
 const mongoURI = process.env.MONGO_URL
 mongoose.connect(mongoURI);
 
