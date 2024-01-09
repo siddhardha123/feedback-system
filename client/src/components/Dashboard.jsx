@@ -14,7 +14,7 @@ import { useAccount } from 'wagmi';
 import admin from '../config.js';
 import Admin from "./Admin.jsx";
 import Student from "./Student.jsx";
-
+import Temp from "./Temp.jsx";
 
 
 
@@ -25,7 +25,7 @@ const Dashboard = () => {
 
     return (
         <Flex>
-            {isAdmin ? <Admin /> : <Student />}
+            {isAdmin ? <Temp /> : <Student />}
         </Flex>
     );
 };

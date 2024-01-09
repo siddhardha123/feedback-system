@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-    Box,
-    Button,
-    Text,
-    Flex,
-    FormControl,
-    FormLabel,
-    Input,
-    Select,
-    Tooltip,
-    useToast
+    Box, Button, Text, Flex, FormControl, FormLabel, Input, Select, Tooltip, useToast, IconButton, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter
 } from '@chakra-ui/react';
+import {DeleteIcon, EditIcon} from "@chakra-ui/icons";
 
 const ModifyForm = ({ existingForm, onSave }) => {
     const [questions, setQuestions] = useState([]);
-    const [selectedQuestionType, setSelectedQuestionType] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [currentQuestion, setCurrentQuestion] = useState({ type: '', content: '', options: [] });
     const toast = useToast();
 
     useEffect(() => {
@@ -23,41 +16,50 @@ const ModifyForm = ({ existingForm, onSave }) => {
         }
     }, [existingForm]);
 
-    const addQuestion = () => {
-        if (!selectedQuestionType) return;
-
-        const newQuestion = {
-            type: selectedQuestionType,
-            content: '',
-            options: selectedQuestionType === 'mcq' ? [{ id: 1, content: '' }] : []
-        };
-        setQuestions([...questions, newQuestion]);
-        setSelectedQuestionType('');
+    const openModal = (question = { type: '', content: '', options: [] }, index = -1) => {
+        setCurrentQuestion({ ...question, index });
+        setIsModalOpen(true);
     };
 
-    const updateQuestionContent = (index, content) => {
-        const newQuestions = [...questions];
-        newQuestions[index].content = content;
-        setQuestions(newQuestions);
+    const closeModal = () => {
+        setCurrentQuestion({ type: '', content: '', options: [] });
+        setIsModalOpen(false);
     };
 
-    const updateOptionContent = (questionIndex, optionIndex, content) => {
-        const newQuestions = [...questions];
-        newQuestions[questionIndex].options[optionIndex].content = content;
-        setQuestions(newQuestions);
+    const handleQuestionChange = (e) => {
+        setCurrentQuestion({ ...currentQuestion, content: e.target.value });
     };
 
-    const addOption = (questionIndex) => {
-        const newQuestions = [...questions];
-        const newOption = { id: newQuestions[questionIndex].options.length + 1, content: '' };
-        newQuestions[questionIndex].options.push(newOption);
-        setQuestions(newQuestions);
+    const handleQuestionTypeChange = (e) => {
+        setCurrentQuestion({ ...currentQuestion, type: e.target.value, options: [] });
     };
 
-    const removeOption = (questionIndex, optionIndex) => {
-        const newQuestions = [...questions];
-        newQuestions[questionIndex].options.splice(optionIndex, 1);
-        setQuestions(newQuestions);
+    const handleOptionChange = (optionIndex, content) => {
+        const newOptions = [...currentQuestion.options];
+        newOptions[optionIndex].content = content;
+        setCurrentQuestion({ ...currentQuestion, options: newOptions });
+    };
+
+    const addOption = () => {
+        setCurrentQuestion({ ...currentQuestion, options: [...currentQuestion.options, { content: '' }] });
+    };
+
+    const removeOption = (optionIndex) => {
+        const newOptions = currentQuestion.options.filter((_, index) => index !== optionIndex);
+        setCurrentQuestion({ ...currentQuestion, options: newOptions });
+    };
+
+    const saveQuestion = () => {
+        if (currentQuestion.index >= 0) {
+            // Editing existing question
+            const updatedQuestions = [...questions];
+            updatedQuestions[currentQuestion.index] = { ...currentQuestion };
+            setQuestions(updatedQuestions);
+        } else {
+            // Adding new question
+            setQuestions([...questions, { ...currentQuestion }]);
+        }
+        closeModal();
     };
 
     const deleteQuestion = (index) => {
@@ -72,49 +74,65 @@ const ModifyForm = ({ existingForm, onSave }) => {
             status: "success",
             duration: 5000,
             isClosable: true,
+            position: "top-right"
         });
     };
 
     return (
-        <Flex direction="column" w="full" mx={'10'}>
+        <Flex direction="column" w="50%" mx="auto" alignItems="center" justifyContent="center">
             <Text fontSize="2xl" mb={4}>Form Editor</Text>
-            <Flex>
-                <Select placeholder="Select question type"
-                        value={selectedQuestionType}
-                        onChange={(e) => setSelectedQuestionType(e.target.value)}>
-                    <option value="mcq">MCQ</option>
-                    <option value="subjective">Subjective</option>
-                </Select>
-                <Button colorScheme="blue" onClick={addQuestion}>Add Question</Button>
-            </Flex>
+            <Button colorScheme="blue" onClick={() => openModal()}>Add New Question</Button>
             {questions.map((question, index) => (
-                <Flex key={index} mb={4} p={4} borderWidth="1px" borderRadius="lg" direction={'column'}>
-                    <Tooltip label="Delete this question" hasArrow>
-                        <Button colorScheme="red" onClick={() => deleteQuestion(index)} size="sm">Delete</Button>
+                <Box key={index} mb={4} p={4} borderWidth="1px" borderRadius="lg">
+                    <Tooltip label="Edit this question" hasArrow>
+                        <IconButton aria-label="Edit question" icon={<EditIcon />} colorScheme="green" onClick={() => openModal(question, index)} size="sm" />
                     </Tooltip>
-                    <FormControl mb={2} mt={2}>
-                        <FormLabel>Question {index + 1}</FormLabel>
-                        <Input
-                            value={question.content}
-                            onChange={(e) => updateQuestionContent(index, e.target.value)}
-                        />
-                    </FormControl>
-                    {question.type === 'mcq' && question.options.map((option, optionIndex) => (
-                        <FormControl key={optionIndex} mb={2}>
-                            <FormLabel>Option {optionIndex + 1}</FormLabel>
-                            <Input
-                                value={option.content}
-                                onChange={(e) => updateOptionContent(index, optionIndex, e.target.value)}
-                            />
-                            <Button onClick={() => removeOption(index, optionIndex)}>Remove Option</Button>
-                        </FormControl>
-                    ))}
-                    {question.type === 'mcq' && (
-                        <Button onClick={() => addOption(index)}>Add Option</Button>
-                    )}
-                </Flex>
+                    <Tooltip label="Delete this question" hasArrow>
+                        <IconButton aria-label="Delete question" icon={<DeleteIcon />} colorScheme="red" onClick={() => deleteQuestion(index)} size="sm" />
+                    </Tooltip>
+                    <Text>{question.content}</Text>
+                </Box>
             ))}
             <Button colorScheme="blue" onClick={handleSaveForm}>Save Form</Button>
+
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>{currentQuestion.index >= 0 ? 'Edit Question' : 'Add Question'}</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <FormControl mb={3}>
+                            <FormLabel>Question Type</FormLabel>
+                            <Select value={currentQuestion.type} onChange={handleQuestionTypeChange}>
+                                <option value="mcq">MCQ</option>
+                                <option value="subjective">Subjective</option>
+                            </Select>
+                        </FormControl>
+                        <FormControl mb={3}>
+                            <FormLabel>Question Content</FormLabel>
+                            <Input value={currentQuestion.content} onChange={handleQuestionChange} />
+                        </FormControl>
+                        {currentQuestion.type === 'mcq' && currentQuestion.options.map((option, optionIndex) => (
+                            <Flex key={optionIndex} alignItems="center">
+                                <FormControl flex="1" mb={2}>
+                                    <FormLabel>Option {optionIndex + 1}</FormLabel>
+                                    <Input value={option.content} onChange={(e) => handleOptionChange(optionIndex, e.target.value)} />
+                                </FormControl>
+                                <IconButton aria-label="Remove option" icon={<DeleteIcon />} onClick={() => removeOption(optionIndex)} size="sm" ml={2} />
+                            </Flex>
+                        ))}
+                        {currentQuestion.type === 'mcq' && (
+                            <Button onClick={addOption}>Add Option</Button>
+                        )}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={saveQuestion}>
+                            Save
+                        </Button>
+                        <Button variant="ghost" onClick={closeModal}>Cancel</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Flex>
     );
 };
