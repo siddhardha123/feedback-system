@@ -3,13 +3,11 @@ const router = express.Router();
 const facultyController = require('../controllers/faculty.controller');
 
 //get end points
-router.get('/tags', facultyController.getTags)
 router.get('/form/:id', facultyController.getForm) // done
 router.get('/forms', facultyController.getForms) // done
 
 // post endpoints
 router.post('/form', facultyController.createForm) //done
-router.post('/tags', facultyController.createTag)
 router.post('/form/:id', facultyController.addTagToForm)
 
 //patch and put

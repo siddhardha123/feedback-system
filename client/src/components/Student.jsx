@@ -16,8 +16,11 @@ import {
     Radio,
     RadioGroup
 } from '@chakra-ui/react';
+import {useAccount} from "wagmi";
+import admin from '../config.js'
 
 const StudentFeedback = () => {
+    const {address} = useAccount()
     const [feedback, setFeedback] = useState({
         courseName: '',
         instructor: '',
@@ -94,7 +97,7 @@ const StudentFeedback = () => {
                             </Stack>
                         </CheckboxGroup>
                     </FormControl>
-                    <Button mt={4} colorScheme="blue" type="submit">Submit Feedback</Button>
+                    <Button mt={4} colorScheme="blue" type="submit" isDisabled={address !== admin}>Submit Feedback</Button>
                 </form>
             </Flex>
         </Flex>
