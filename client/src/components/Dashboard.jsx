@@ -5,11 +5,13 @@ import { useAccount } from 'wagmi';
 import { getSubmissions } from '../_services'
 const Dashboard = () => {
     const { address } = useAccount();
-    const subjects = ["OS", "DBMS", "OOPS"]
+    const subjects = ["OS", "DBMS", "OOPS","DSA","DAA"]
     const [subjectMap, setSubjectMap] = useState({
         "OS": false,
         "DBMS": false,
-        "OOPS": false
+        "OOPS": false,
+        "DSA" : false,
+        "DAA" : false
     })
 
     const checkForSubmissions = async () => {

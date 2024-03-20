@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Flex,
   FormControl,
@@ -19,6 +19,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Web3 from 'web3';
+import contractABI from './contractABI.json';
+
 
 function GenericForm() {
   const { subject } = useParams();
@@ -33,8 +36,32 @@ function GenericForm() {
   const [recommend, setRecommend] = useState('no');
   const { address } = useAccount();
   const navigate = useNavigate()
+
+  const web3 = new Web3(window.ethereum);
+  const contract = new web3.eth.Contract(contractABI, '0xC75e6c1A7995B24a69ab1ddA7e92a50cB6374561');
+
+  // useEffect(() => {
+
+  //   contract.methods.addFeedback("1","2","3").send({ from: '0xA9829ec29e85431364FC2B6e41b66A34f81AB69e' }).then(value => console.log(value))
+  // }, [])
+
+
+  const sendReqToBlockchain = (address,faculty,subject) => {
+    contract.methods.addFeedback(address,faculty,subject).send({ from: '0xA9829ec29e85431364FC2B6e41b66A34f81AB69e' }).then(value => console.log(value))
+  }
+
+  const getDataFromBlockchain = () => {
+    contract.methods.getAllFeedbacks().call().then(value => console.log(value))
+  }
+
+  useEffect(()=>{
+    getDataFromBlockchain()
+  },[])
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    await sendReqToBlockchain(address,faculty,subject)
+    // await getDataFromBlockchain()
     const formData = {
       address,
       faculty,
@@ -49,7 +76,7 @@ function GenericForm() {
         suggestions,
         recommend,
       }
- 
+
     };
 
     try {

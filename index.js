@@ -18,7 +18,7 @@ app.use(facultyRouter)
 
 
 
-const mongoURI = process.env.MONGO_URL
+const mongoURI = 'mongodb+srv://sidvarma:1234@cluster0.ladss.mongodb.net/?retryWrites=true&w=majority'
 mongoose.connect(mongoURI);
 
 const connection = mongoose.connection;
@@ -31,5 +31,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`app listening at http://localhost:${port}`);
 });

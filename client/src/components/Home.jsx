@@ -28,7 +28,7 @@ const Home = () => {
 
             {/* Footer */}
             <Flex as="footer" py={4} bg="blue.700" color="white" justify="center">
-                <Text>&copy; {new Date().getFullYear()} My Brand. All rights reserved.</Text>
+                <Text>&copy; {new Date().getFullYear()} All rights reserved.</Text>
             </Flex>
         </Flex>
     );

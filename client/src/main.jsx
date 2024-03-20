@@ -14,8 +14,8 @@ import {
     arbitrum,
     base,
     zora,
+    polygonMumbai
 } from 'wagmi/chains';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import {ChakraProvider} from "@chakra-ui/react";
 import Layout from "./components/Layout.jsx";
@@ -23,7 +23,7 @@ import Layout from "./components/Layout.jsx";
 
 
 const { chains, publicClient } = configureChains(
-    [mainnet,polygon,optimism,arbitrum,base,zora],
+    [mainnet,polygon,optimism,arbitrum,base,zora,polygonMumbai],
     [
         publicProvider()
     ]
