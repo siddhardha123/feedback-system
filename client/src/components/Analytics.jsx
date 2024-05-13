@@ -4,7 +4,12 @@ import { Flex, Text, Table, Thead, Tbody, Tr, Th, Td, Button } from '@chakra-ui/
 import { RepeatIcon } from '@chakra-ui/icons'
 import Web3 from 'web3';
 import contractABI from './contractABI.json'
+import {useAccount} from "wagmi";
+import admin from "../config.js"
+import {useNavigate} from 'react-router'
 const AnalyticsComponent = () => {
+  const { address } = useAccount();
+  const navigate = useNavigate()
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false)
   const [overallSatisfactionData, setOverallSatisfactionData] = useState([]);
@@ -19,6 +24,11 @@ const AnalyticsComponent = () => {
     getDataFromBlockchain();
   }, []);
 
+  useEffect(()=>{
+    if(address !== admin){
+      navigate('/')
+    }
+  },[])
 
   const getDataFromBlockchain = () => {
     setLoading(true)
@@ -43,6 +53,7 @@ const AnalyticsComponent = () => {
     fetch('http://localhost:3000')
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         setData(data);
         setLoading(false)
         setOverallSatisfactionData(calculateOverallSatisfaction(data));
@@ -108,6 +119,7 @@ const AnalyticsComponent = () => {
                 <Th>Learning Environment</Th>
                 <Th>Overall Satisfaction</Th>
                 <Th>Recommendation</Th>
+                <Th>suggestions</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -120,6 +132,7 @@ const AnalyticsComponent = () => {
                   <Td>{item.metadata.learningEnvironment}</Td>
                   <Td>{item.metadata.overallSatisfaction}</Td>
                   <Td>{item.metadata.recommend}</Td>
+                  <Td>{item.metadata.suggestions}</Td>
                 </Tr>
               ))}
             </Tbody>

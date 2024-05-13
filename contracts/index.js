@@ -2,7 +2,6 @@ const { ethers } = require('ethers');
 const { contractAddress } = require('./config');
 const abi = require('./abi.json');
 
-//const provider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.g.alchemy.com/v2/xhMRW3CUKGND95rf4F8JYzlXUDBc8NK7'); // Replace YOUR_PROVIDER_URL with the Ethereum node URL
 
 // Contract ABI
 console.log(abi);
